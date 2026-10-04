@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rutas del API</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    max-width: 1000px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #ddd; }
+  h3 { font-size: 15px; margin: 24px 0 8px; color: #444; }
+  .base { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: #555; margin: 0 0 8px; }
+  table { border-collapse: collapse; width: 100%; margin: 0 0 16px; font-size: 14px; }
+  th, td { border: 1px solid #d5d5d5; padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: #f4f4f5; font-weight: 600; }
+  td.ruta, td.metodo { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+  td.metodo { white-space: nowrap; }
+  .nota { color: #666; font-size: 13px; }
+  .aviso { border: 1px solid #e0c000; background: #fffbe6; padding: 10px 14px; margin: 12px 0; font-size: 14px; }
+  ul { margin: 0 0 16px; padding-left: 22px; font-size: 14px; }
+  li { margin-bottom: 4px; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; background: #f4f4f5; padding: 1px 4px; }
+</style>
+</head>
+<body>
+
+<h1>Rutas del API</h1>
+<p class="base">Base: http://18.221.67.94:4000/api</p>
+<p class="nota">Formato de autenticacion: <code>Authorization: Bearer &lt;token&gt;</code> en la cabecera.</p>
+
+<h2>Auth</h2>
+<table>
+  <thead>
+    <tr><th>Metodo</th><th>Ruta</th><th>Notas</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="metodo">POST</td><td class="ruta">/auth/login</td><td>Body: <code>id_acceso</code> (9 digitos), <code>password</code>. Devuelve <code>token</code> y <code>usuario</code>.</td></tr>
+    <tr><td class="metodo">GET</td><td class="ruta">/auth/me</td><td>Valida el token y devuelve el usuario de la sesion.</td></tr>
+  </tbody>
+</table>
+
+<h2>Recursos con CRUD completo</h2>
+<p class="nota">Operaciones disponibles: <code>GET</code> listar, <code>POST</code> crear en la raiz, <code>PUT /:id</code> actualizar, <code>DELETE /:id</code> eliminar.</p>
+<table>
+  <thead>
+    <tr><th>Ruta</th><th>Notas</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="ruta">/estudiantes</td><td>Al crear devuelve <code>id_acceso</code>. Contrasena inicial: la que se envie o el DNI.</td></tr>
+    <tr><td class="ruta">/docentes</td><td>Acepta <code>nombre_usuario</code> y <code>password</code> solo al crear.</td></tr>
+    <tr><td class="ruta">/usuarios</td><td>Solo lectura. No tiene ruta de creacion.</td></tr>
+    <tr><td class="ruta">/matriculas</td><td></td></tr>
+    <tr><td class="ruta">/academicos/cursos</td><td></td></tr>
+    <tr><td class="ruta">/academicos/ciclos</td><td></td></tr>
+    <tr><td class="ruta">/academicos/grupos</td><td></td></tr>
+    <tr><td class="ruta">/academicos/horarios</td><td></td></tr>
+    <tr><td class="ruta">/academicos/canales</td><td>Solo lectura.</td></tr>
+    <tr><td class="ruta">/evaluaciones</td><td><strong>POST devuelve 404.</strong> El frontend lo usa como ruta de creacion. Posible bug del backend.</td></tr>
+  </tbody>
+</table>
+
+<h2>Rutas de solo lectura o por rol</h2>
+<table>
+  <thead>
+    <tr><th>Ruta</th><th>Acceso</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="ruta">/estudiantes/me</td><td>Estudiante</td></tr>
+    <tr><td class="ruta">/matriculas/me</td><td>Estudiante</td></tr>
+    <tr><td class="ruta">/evaluaciones/me/notas</td><td>Estudiante</td></tr>
+    <tr><td class="ruta">/academicos/grupos/me</td><td>Docente</td></tr>
+    <tr><td class="ruta">/asistencias/me</td><td>Docente o estudiante</td></tr>
+    <tr><td class="ruta">/asistencias</td><td>Segun rol</td></tr>
+    <tr><td class="ruta">/mis-cursos</td><td>Segun rol</td></tr>
+    <tr><td class="ruta">/mis-grupos</td><td>Segun rol</td></tr>
+    <tr><td class="ruta">/mis-matriculas</td><td>Segun rol</td></tr>
+    <tr><td class="ruta">/simulacros/me</td><td>Solo lectura</td></tr>
+  </tbody>
+</table>
+
+<h2>Rutas adicionales</h2>
+<table>
+  <thead>
+    <tr><th>Metodo</th><th>Ruta</th><th>Notas</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="metodo">GET</td><td class="ruta">/health</td><td>Publica, no requiere token.</td></tr>
+    <tr><td class="metodo">GET</td><td class="ruta">/estudiantes/buscar-dni/:dni</td><td>Busca por DNI, usado en el flujo de reincorporacion.</td></tr>
+    <tr><td class="metodo">PUT</td><td class="ruta">/estudiantes/:id/reincorporar</td><td>Genera un <code>id_acceso</code> nuevo.</td></tr>
+  </tbody>
+</table>
+
+<h2>Cuerpos de creacion</h2>
+
+<h3>POST /estudiantes</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Requerido</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">nombres</td><td>Si</td><td></td></tr>
+    <tr><td class="ruta">apellidos</td><td>Si</td><td></td></tr>
+    <tr><td class="ruta">dni</td><td>Si</td><td>8 digitos</td></tr>
+    <tr><td class="ruta">fecha_nacimiento</td><td>Si</td><td>Formato fecha</td></tr>
+    <tr><td class="ruta">canal_id</td><td>Si</td><td>Lista: GET /academicos/canales</td></tr>
+    <tr><td class="ruta">turno</td><td>Si</td><td>MANANA o TARDE</td></tr>
+    <tr><td class="ruta">correo</td><td>No</td><td>Email</td></tr>
+    <tr><td class="ruta">telefono</td><td>No</td><td>9 digitos</td></tr>
+    <tr><td class="ruta">direccion</td><td>No</td><td></td></tr>
+    <tr><td class="ruta">estado</td><td>No</td><td>Solo al editar. ACTIVO o INACTIVO</td></tr>
+  </tbody>
+</table>
+
+<h3>POST /docentes</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Requerido</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">nombres</td><td>Si</td><td></td></tr>
+    <tr><td class="ruta">apellidos</td><td>Si</td><td></td></tr>
+    <tr><td class="ruta">dni</td><td>Si</td><td>8 digitos</td></tr>
+    <tr><td class="ruta">correo</td><td>No</td><td>Email</td></tr>
+    <tr><td class="ruta">telefono</td><td>No</td><td>9 digitos</td></tr>
+    <tr><td class="ruta">nombre_usuario</td><td>No</td><td>Solo al crear</td></tr>
+    <tr><td class="ruta">password</td><td>No</td><td>Solo al crear</td></tr>
+  </tbody>
+</table>
+
+<h3>POST /academicos/grupos</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">nombre</td><td>Requerido</td></tr>
+    <tr><td class="ruta">curso_id</td><td>Requerido. Lista: GET /academicos/cursos?activos=true</td></tr>
+    <tr><td class="ruta">canal_id</td><td>Requerido. Lista: GET /academicos/canales</td></tr>
+    <tr><td class="ruta">docente_id</td><td>Requerido. Lista: GET /docentes</td></tr>
+    <tr><td class="ruta">ciclo_id</td><td>Requerido. Lista: GET /academicos/ciclos?activos=true</td></tr>
+    <tr><td class="ruta">capacidad</td><td>Requerido, numero</td></tr>
+    <tr><td class="ruta">estado</td><td>Solo al editar</td></tr>
+  </tbody>
+</table>
+
+<h3>POST /academicos/horarios</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">grupo_id</td><td>Requerido. Lista: GET /academicos/grupos?activos=true</td></tr>
+    <tr><td class="ruta">dia_semana</td><td>LUNES a DOMINGO</td></tr>
+    <tr><td class="ruta">hora_inicio</td><td>Requerido</td></tr>
+    <tr><td class="ruta">hora_fin</td><td>Requerido</td></tr>
+    <tr><td class="ruta">aula</td><td>Requerido. Valores: Aula 101 a 204</td></tr>
+  </tbody>
+</table>
+
+<h3>POST /matriculas</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">estudiante_id</td><td>Requerido. Lista: GET /estudiantes</td></tr>
+    <tr><td class="ruta">canal_id</td><td>Requerido. Lista: GET /academicos/canales</td></tr>
+    <tr><td class="ruta">ciclo_id</td><td>Requerido. Lista: GET /academicos/ciclos?activos=true</td></tr>
+    <tr><td class="ruta">monto_matricula</td><td>Requerido, numero</td></tr>
+    <tr><td class="ruta">monto_mensual</td><td>Requerido, numero</td></tr>
+  </tbody>
+</table>
+
+<h3>POST /academicos/cursos</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">nombre</td><td>Requerido</td></tr>
+    <tr><td class="ruta">descripcion</td><td>Opcional</td></tr>
+    <tr><td class="ruta">estado</td><td>Solo al editar</td></tr>
+  </tbody>
+</table>
+
+<h3>POST /academicos/ciclos</h3>
+<table>
+  <thead><tr><th>Campo</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">nombre</td><td>Requerido</td></tr>
+    <tr><td class="ruta">fecha_inicio</td><td>Requerido</td></tr>
+    <tr><td class="ruta">fecha_fin</td><td>Requerido</td></tr>
+    <tr><td class="ruta">estado</td><td>Solo al editar</td></tr>
+  </tbody>
+</table>
+
+<h2>Paginas del frontend</h2>
+<p class="base">http://18.221.67.94/</p>
+<table>
+  <thead><tr><th>Ruta</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td class="ruta">/</td><td>Pantalla de login</td></tr>
+    <tr><td class="ruta">/dashboard</td><td></td></tr>
+    <tr><td class="ruta">/administracion</td><td></td></tr>
+    <tr><td class="ruta">/administracion/docentes</td><td></td></tr>
+    <tr><td class="ruta">/administracion/horarios</td><td></td></tr>
+    <tr><td class="ruta">/administracion/secretaria</td><td></td></tr>
+    <tr><td class="ruta">/asistencia</td><td></td></tr>
+    <tr><td class="ruta">/horarios</td><td></td></tr>
+    <tr><td class="ruta">/notas</td><td></td></tr>
+    <tr><td class="ruta">/pagos</td><td></td></tr>
+    <tr><td class="ruta">/mi-perfil</td><td></td></tr>
+  </tbody>
+</table>
+
+<h2>Notas sobre esta lista</h2>
+<div class="aviso">
+  Un codigo 401 no confirma que una ruta exista. El middleware de autenticacion se ejecuta antes del
+  matching de rutas, por lo que todo <code>/api/usuarios/*</code> devuelve 401 aunque la ruta sea
+  inventada. Esta lista proviene del bundle del frontend, que es la fuente fiable.
+</div>
+<ul>
+  <li><code>POST /api/evaluaciones</code> devuelve 404 aunque el frontend lo usa para crear evaluaciones.</li>
+  <li>El backend filtra trazas de pila con rutas internas del servidor en las respuestas de error.</li>
+  <li>Los cuerpos de creacion estan inferidos de los formularios del frontend, no de una especificacion oficial.</li>
+</ul>
+
+</body>
+</html>
